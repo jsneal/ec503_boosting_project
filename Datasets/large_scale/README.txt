@@ -1,0 +1,1 @@
+Dataset info found here: http://archive.ics.uci.edu/ml/datasets/Character+Font+Images#
