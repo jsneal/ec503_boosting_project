@@ -16,6 +16,8 @@ for j = 1:100
     data(100+j, 3) = -1;
 end
 
-figure(1)
-gscatter(data(:, 1), data(:, 2), data(:, 3), 'rb')
+% figure(1)
+% gscatter(data(:, 1), data(:, 2), data(:, 3), 'rb')
+
+save("linearly_separable_not_by_stump.mat", "data");
 
