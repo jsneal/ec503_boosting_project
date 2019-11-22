@@ -1,15 +1,24 @@
 %% AdaBoost John, Nadim, Karim
 
 %% Linear dataset
-load('data_linear.mat'); data_linear = dataset'; clear dataset;
+main_dir = dir('..');
+main_dir = main_dir.folder;
+data_dir = strcat(main_dir,  '\Datasets\synthetic\data_linear.mat');
+load(data_dir); data_linear = dataset'; clear dataset;
 figure; gscatter(data_linear(:,1),data_linear(:,2),data_linear(:,3),'rb','+o');
 
 %% Circular Dataset
-load('circular_dataset.mat');
+main_dir = dir('..');
+main_dir = main_dir.folder;
+data_dir = strcat(main_dir,  '\Datasets\synthetic\circular_dataset.mat');
+load(data_dir);
 figure; gscatter(data_circular(:,1),data_circular(:,2),data_circular(:,3),'rb','+o');
 
-%% 
-load('linearly_separable_not_by_stump.mat'); data_tilted = data; clear data;
+%%
+main_dir = dir('..');
+main_dir = main_dir.folder;
+data_dir = strcat(main_dir,  '\Datasets\synthetic\linearly_separable_not_by_stump.mat');
+load(data_dir); data_tilted = data; clear data;
 figure; gscatter(data_tilted(:,1),data_tilted(:,2),data_tilted(:,3),'rb','+o');
 
 %% AdaBoost on Circular Dataset
