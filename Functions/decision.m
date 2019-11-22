@@ -14,7 +14,7 @@ end
 if (linear_combo == 0)
     prediction = 1;
 else
-    prediction = sign (linear_combo);
+    prediction = sign(linear_combo);
 end
 
 
