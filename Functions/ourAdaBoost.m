@@ -1,16 +1,25 @@
 %% AdaBoost John, Nadim, Karim
 
 %% Linear dataset
-load('data_linear.mat'); data_linear = dataset'; clear dataset;
-figure; gscatter(data_linear(:,1),data_linear(:,2),data_linear(:,3),'rb','+o');
+main_dir = dir('..');
+main_dir = main_dir.folder;
+data_dir = strcat(main_dir,  '\Datasets\synthetic\data_linear.mat');
+load(data_dir); data_linear = dataset'; clear dataset;
+figure(1); gscatter(data_linear(:,1),data_linear(:,2),data_linear(:,3),'rb','+o');
 
 %% Circular Dataset
-load('circular_dataset.mat');
-figure; gscatter(data_circular(:,1),data_circular(:,2),data_circular(:,3),'rb','+o');
+main_dir = dir('..');
+main_dir = main_dir.folder;
+data_dir = strcat(main_dir,  '\Datasets\synthetic\circular_dataset.mat');
+load(data_dir);
+figure(2); gscatter(data_circular(:,1),data_circular(:,2),data_circular(:,3),'rb','+o');
 
-%% 
-load('linearly_separable_not_by_stump.mat'); data_tilted = data; clear data;
-figure; gscatter(data_tilted(:,1),data_tilted(:,2),data_tilted(:,3),'rb','+o');
+%%
+main_dir = dir('..');
+main_dir = main_dir.folder;
+data_dir = strcat(main_dir,  '\Datasets\synthetic\linearly_separable_not_by_stump.mat');
+load(data_dir); data_tilted = data; clear data;
+figure(3); gscatter(data_tilted(:,1),data_tilted(:,2),data_tilted(:,3),'rb','+o');
 
 %% AdaBoost on Circular Dataset
 n = size(data_circular,1);
@@ -39,7 +48,7 @@ for i=1:numel(Ts)
 
 end
 %% CCR
-figure(1);
+figure(4);
 semilogx(Ts,train_CCRs,'*-'); xlabel('T'); ylabel('CCR'); title('CCRs for Circular Dataset');
 hold on;
 semilogx(Ts,test_CCRs,'*-');
@@ -71,7 +80,7 @@ for i=1:numel(Ts)
     train_CCRs(i,1) = test_our_boosted_classifier(data_tilted_train,alphas,classifiers);
 end
 %% CCR
-figure(2);
+figure(5);
 semilogx(Ts,train_CCRs,'*-'); xlabel('T'); ylabel('CCR'); title('Train CCRs for Tilted Dataset');
 hold on;
 semilogx(Ts,test_CCRs,'*-');
