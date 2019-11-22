@@ -1,6 +1,8 @@
 % test_calculate_gs
-
-load('C:\Users\jsnea\Desktop\EC503\Project\ec503_boosting_project\Datasets\synthetic\data_linear.mat');
+main_dir = dir('..');
+main_dir = main_dir.folder;
+data_dir = strcat(main_dir,  '\Datasets\synthetic\data_linear.mat');
+load(data_dir);
 
 data = dataset';
 all_gs = calculate_gs(data);
