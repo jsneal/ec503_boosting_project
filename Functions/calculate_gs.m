@@ -22,34 +22,41 @@ function all_gs = calculate_gs(data)
         feature_data_and_labels = [data(:, feature_index) labels];
         feature_data_and_labels = sortrows(feature_data_and_labels, 1);
         all_gs(row, 2) = feature_data_and_labels(1, 1) - 1;
-        
-        if feature_data_and_labels(1, 2) == 1
-           all_gs(row, 3) = -1;
-        else
-           all_gs(row, 3) = 1;
-        end
         all_gs(row, 1) = feature_index; 
+        all_gs(row, 3) = -1;
+        
         row = row+1; 
         
-        all_gs(row, 2) = feature_data_and_labels(end, 1) + 1;
-        if feature_data_and_labels(end, 2) == 1
-           all_gs(row, 3) = -1;
-        else
-           all_gs(row, 3) = 1;
-        end
-        all_gs(row, 1) = feature_index;
+        all_gs(row, 2) = feature_data_and_labels(1, 1) - 1;
+        all_gs(row, 1) = feature_index; 
+        all_gs(row, 3) = 1;
+
         row = row+1; 
+        
+        all_gs(row, 2) = feature_data_and_labels(end, 1) - 1;
+        all_gs(row, 1) = feature_index; 
+        all_gs(row, 3) = -1;
+        
+        row = row+1;
+        
+        all_gs(row, 2) = feature_data_and_labels(end, 1) - 1;
+        all_gs(row, 1) = feature_index; 
+        all_gs(row, 3) = 1;
+        
+        row = row+1;
         
         for i = 2:n
             if feature_data_and_labels(i, 2) ~= feature_data_and_labels(i-1, 2)
                 all_gs(row, 2) = (feature_data_and_labels(i, 1) + feature_data_and_labels(i + 1, 1))/2;
-                if feature_data_and_labels(i, 2) == 1
-                   all_gs(row, 3) = -1;
-                else
-                   all_gs(row, 3) = 1;
-                end
+                all_gs(row, 3) = -1;
                 all_gs(row, 1) = feature_index; 
                 row = row+1;
+                
+                all_gs(row, 2) = (feature_data_and_labels(i, 1) + feature_data_and_labels(i + 1, 1))/2;
+                all_gs(row, 3) = 1;
+                all_gs(row, 1) = feature_index; 
+                row = row+1;
+                
             end
         end
         
