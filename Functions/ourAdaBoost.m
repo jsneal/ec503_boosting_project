@@ -20,11 +20,15 @@ all_gs = calculate_gs(data_circular);
 alphas = zeros(T,1);
 classifiers = zeros(T,3);
 
+randOrder = randperm(n);
+data_circular_train = data_circular(randOrder(1:160),:);
+data_circular_test = data_circular(randOrder(161:200),:);
+
 for t=1:T
-    [best_feature, best_treshold, best_smaller_is, min_error] = calculate_best_g(data_circular, weights, all_gs);
+    [best_feature, best_treshold, best_smaller_is, min_error] = calculate_best_g(data_circular_train, weights, all_gs);
     alphas(t,1) = 0.5*log((1-min_error)/min_error);
     classifiers(t,:) = [best_feature, best_treshold, best_smaller_is];
-    weights = update_weights(data_circular, weights, best_feature, best_treshold, best_smaller_is, min_error);
+    weights = update_weights(data_circular_train, weights, best_feature, best_treshold, best_smaller_is, min_error);
 end
 
-CCR = test_our_boosted_classifier(data_circular,alphas,classifiers);
+CCR = test_our_boosted_classifier(data_circular_test,alphas,classifiers);
