@@ -14,7 +14,7 @@ data_dir = strcat(main_dir,  '\Datasets\synthetic\circular_dataset.mat');
 load(data_dir);
 figure(2); gscatter(data_circular(:,1),data_circular(:,2),data_circular(:,3),'rb','+o');
 
-%%
+%% Tilted Dataset
 main_dir = dir('..');
 main_dir = main_dir.folder;
 data_dir = strcat(main_dir,  '\Datasets\synthetic\linearly_separable_not_by_stump.mat');
