@@ -48,7 +48,7 @@ for i=1:numel(Ts)
     train_CCRs(i,1) = test_our_boosted_classifier(data_circular_train,alphas,classifiers);
 
 end
-% CCR
+%% CCR
 figure(4);
 semilogx(Ts,train_CCRs,'*-'); xlabel('T'); ylabel('CCR'); title('CCRs for Circular Dataset');
 hold on;
