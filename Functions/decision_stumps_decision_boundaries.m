@@ -33,6 +33,34 @@ datasets{1} = data_linear;
 datasets{2} = data_circular;
 datasets{3} = data_tilted;
 
+dense_grids = cell(3, 1);
+for grid_num = 1:2
+    x1_min = min(datasets{grid_num}(:, 1));
+    x1_max = max(datasets{grid_num}(:, 1));
+    x2_min = min(datasets{grid_num}(:, 2));
+    x2_max = max(datasets{grid_num}(:, 2));
+    row_num = 1;
+    for x1_coord = x1_min:.01:x1_max
+        for x2_coord = x2_min:.01:x2_max
+            dense_grids{grid_num}(row_num, :) = [x1_coord, x2_coord, 0];
+            row_num = row_num+1;
+        end       
+    end
+end
+
+grid_num = 3;
+x1_min = min(datasets{grid_num}(:, 1));
+x1_max = max(datasets{grid_num}(:, 1));
+x2_min = min(datasets{grid_num}(:, 2));
+x2_max = max(datasets{grid_num}(:, 2));
+row_num = 1;
+for x1_coord = x1_min:1:x1_max
+    for x2_coord = x2_min:1:x2_max
+        dense_grids{grid_num}(row_num, :) = [x1_coord, x2_coord, 0];
+        row_num = row_num+1;
+    end       
+end
+
 predicted_labels_train = cell(3, 1);
 predicted_labels_test = cell(3, 1);
 %%
@@ -43,8 +71,9 @@ for i = 1:3
     train_end = n*.8;
     randOrder = randperm(n);
     data_train = data(randOrder(1:train_end),:);
-    data_test = data(randOrder(train_end+1:n),:);
-    
+%     data_test = data(randOrder(train_end+1:n),:);
+%     data_test = 
+    data_test = dense_grids{i};
     n_train = size(data_train, 1);
     n_test = size(data_test, 1);
     
@@ -55,17 +84,6 @@ for i = 1:3
     all_gs = calculate_gs(data_train);
     [best_feature, best_treshold, best_smaller_is, min_error] = calculate_best_g(data_train, weights, all_gs);
     
-    figure(i); gscatter(data_train(:,1),data_train(:,2),data_train(:,3),'rb');
-    hold on
-    tresh_vec = best_treshold.*ones(100, 1);
-    zero_vec = zeros(100, 1);
-    if best_feature == 1
-        boundary = linspace(min(data_train(:,2)), max(data_train(:,2)), 100)';
-        gscatter(tresh_vec, boundary, zero_vec, 'k');
-    else
-        boundary = linspace(min(data_train(:,1)), max(data_train(:,1)), 100)';
-        gscatter(boundary, tresh_vec, zero_vec, 'k');
-    end
     xlabel('x1')
     ylabel('x2')
     
@@ -74,24 +92,14 @@ for i = 1:3
         predicted_labels_train{i}(j, 1) = decision_stump(data_train(j, :), best_feature, best_treshold, best_smaller_is);
         predicted_labels_train{i}(j, 2) = data_train(j, end);
     end
-    % Test CCR
+    
     for j = 1:n_test
-        predicted_labels_test{i}(j, 1) = decision_stump(data_test(j, :), best_feature, best_treshold, best_smaller_is);
-        predicted_labels_test{i}(j, 2) = data_test(j, end);
+        data_test(j, 3) = decision_stump(data_test(j, :), best_feature, best_treshold, best_smaller_is);
     end
-   
+    
+    figure(i); gscatter(data_test(:,1),data_test(:,2),data_test(:,3),'rb');
+    hold on
+    figure(i); gscatter(data_train(:,1),data_train(:,2),data_train(:,3),'rb');
+
 end
-
-for dataset_num = 1:3
-   ccrs(dataset_num, 1) = sum(predicted_labels_train{dataset_num}(:, 1) == predicted_labels_train{dataset_num}(:, 2))/size(predicted_labels_train{dataset_num}, 1);
-   ccrs(dataset_num, 2) = sum(predicted_labels_test{dataset_num}(:, 1) == predicted_labels_test{dataset_num}(:, 2))/size(predicted_labels_test{dataset_num}, 1); 
-end
-
-figure(4)
-bar(ccrs)
-xticklabels({'Separable By Stump', 'Circular Dataset', 'Separable (Not By Stump)'})
-title('Train/Test CCR For Different Synthetic Datasets')
-xlabel('Datasets (Train/Test)')
-ylabel('CCR')
-
 
