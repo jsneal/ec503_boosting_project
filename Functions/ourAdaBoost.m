@@ -1,5 +1,5 @@
 %% AdaBoost John, Nadim, Karim
-
+clear; clc;
 %% Linear dataset
 main_dir = dir('..');
 main_dir = main_dir.folder;
@@ -30,7 +30,7 @@ train_CCRs = zeros(numel(Ts),1);
 randOrder = randperm(n);
 data_circular_train = data_circular(randOrder(1:160),:);
 data_circular_test = data_circular(randOrder(161:200),:);
-all_gs = calculate_gs(data_circular_train);
+all_gs = calculate_gs(data_circular);
 n_train = size(data_circular_train,1);
 for i=1:numel(Ts)
     
@@ -64,7 +64,7 @@ train_CCRs = zeros(numel(Ts),1);
 randOrder = randperm(n);
 data_tilted_train = data_tilted(randOrder(1:160),:);
 data_tilted_test = data_tilted(randOrder(161:200),:);
-all_gs = calculate_gs(data_tilted_train);
+all_gs = calculate_gs(data_tilted);
 n_train = size(data_tilted_train,1);
 for i=1:numel(Ts)
     
