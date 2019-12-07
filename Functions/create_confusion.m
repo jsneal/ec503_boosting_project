@@ -4,7 +4,7 @@ function create_confusion (test_set, alphas, classifiers)
 
 rows = size(test_set,1);
 columns = size(test_set,2);
-known = test_set(columns,:);
+known = test_set(:,end);
 predicted = zeros(rows,1);
 
 for i=1:rows
@@ -14,7 +14,6 @@ end
 confusionchart(known,predicted);
 
 end
-
 
 
 
