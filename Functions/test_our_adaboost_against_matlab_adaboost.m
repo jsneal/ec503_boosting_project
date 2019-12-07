@@ -30,22 +30,24 @@ dataset_classifiers = cell(3, 1);
 
 
 for dataset_num = 1:3
-   data = datasets{dataset_num};
-   feature_col_num = size(data, 2) - 1;
-%    for feature_num = 1:feature_col_num
-%        feature_and_labels = [data(:, feature_num) data(:, end)];
-%        thresholds{dataset_num, feature_num} = 
-%    end
-   n = size(data, 1);
-   randOrder = randperm(n);
-   train_end = round(.7*n);
-   data_train = data_tilted(randOrder(1:train_end),:);
-   data_test = data_tilted(randOrder(train_end+1:n),:);
-   t = templateTree('Surrogate', 'on', 'MaxNumSplits',1);
-   ens = fitcensemble(data_train(:, 1:end-1), data_train(:, end), 'Method', 'AdaBoostM1', ...
-   'NumLearningCycles',1000,'Learners',t);
-    data_test(:, 4) = predict(ens,data_test(:, 1:2));
-    n_test = size(data_test, 1);
-    ccrs(dataset_num) = sum(data_test(:, 3) == data_test(:, 4))/n_test;
+   for T = 1:200
+       data = datasets{dataset_num};
+       feature_col_num = size(data, 2) - 1;
+    %    for feature_num = 1:feature_col_num
+    %        feature_and_labels = [data(:, feature_num) data(:, end)];
+    %        thresholds{dataset_num, feature_num} = 
+    %    end
+       n = size(data, 1);
+       randOrder = randperm(n);
+       train_end = round(.7*n);
+       data_train = data_tilted(randOrder(1:train_end),:);
+       data_test = data_tilted(randOrder(train_end+1:n),:);
+       t = templateTree('Surrogate', 'on', 'MaxNumSplits',1);
+       ens = fitcensemble(data_train(:, 1:end-1), data_train(:, end), 'Method', 'AdaBoostM1', ...
+       'NumLearningCycles',1000,'Learners',t);
+        data_test(:, 4) = predict(ens,data_test(:, 1:2));
+        n_test = size(data_test, 1);
+        ccrs(dataset_num, T) = sum(data_test(:, 3) == data_test(:, 4))/n_test;
+   end
 end
 
