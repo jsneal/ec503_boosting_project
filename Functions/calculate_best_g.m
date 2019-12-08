@@ -19,8 +19,8 @@ for i=1:size(all_gs,1)
     
     temp_error = 0;
     for j=1:size(X,1)
-        pred = decision_stump(X(j,1:2), all_gs(i,1), all_gs(i,2), all_gs(i,3));
-        if (pred ~= X(j,3))
+        pred = decision_stump(X(j,1:size(X,2)-1), all_gs(i,1), all_gs(i,2), all_gs(i,3));
+        if (pred ~= size(X,2))
             temp_error = temp_error + weights(j);
         end
     end
@@ -33,6 +33,3 @@ for i=1:size(all_gs,1)
     end
     
 end
-
-end
-
