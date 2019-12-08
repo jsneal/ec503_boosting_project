@@ -25,9 +25,9 @@ load(data_dir); data_tilted = data; clear data;
 % figure(3); gscatter(data_tilted(:,1),data_tilted(:,2),data_tilted(:,3),'rb','+o');
 
 datasets = cell(3, 1);
-datasets{1} = data_linear;
-datasets{2} = data_circular;
-datasets{3} = data_tilted;
+datasets{1} = [data_linear zeros(200, 1)];
+datasets{2} = [data_circular zeros(200, 1)];
+datasets{3} = [data_tilted zeros(200, 1)];
 
 dataset_classifiers = cell(3, 1);
 
@@ -72,20 +72,21 @@ for dataset_num = 1:3
 
            n = size(data, 1);
            randOrder = randperm(n);
-           train_end = round(.8*n);
-           data_train = datasets{dataset_num}(randOrder(1:train_end),:);
-           data_test = datasets{dataset_num}(randOrder(train_end+1:n),:);
+           train_end = round(.7*n);
+           data_train = data(randOrder(1:train_end),:);
+           data_test = data(randOrder(train_end+1:n),:);
            n_train = size(data_train, 1);
            t = templateTree('MaxNumSplits', 1);
-           ens = fitcensemble(data_train(:, 1:end-1), data_train(:, end), 'Method', 'AdaBoostM1', ...
-           'NumLearningCycles',T,'Learners',t);
-           data_test(:, 4) = predict(ens,data_test(:, 1:2));
-           data_train(:, 4) = predict(ens,data_train(:, 1:2));
+           ens = fitcensemble(data_train(:, 1:end-2), data_train(:, end-1), 'Method', 'AdaBoostM1', ...
+           'NumLearningCycles',Ts(j),'Learners',t);
+           data_test(:, end) = predict(ens,data_test(:, 1:2));
+           data_train(:, end) = predict(ens,data_train(:, 1:2));
            n_test = size(data_test, 1);
-           train_ccrs(dataset_num, (T/10)) = sum(data_train(:, 3) == data_train(:, 4))/n_train;
-           test_ccrs(dataset_num, (T/10)) = sum(data_test(:, 3) == data_test(:, 4))/n_test;
-           fprintf('%d, %d\n', dataset_num, T);
+           train_ccrs(dataset_num, j) = sum(data_train(:, 3) == data_train(:, 4))/n_train;
+           test_ccrs(dataset_num, j) = sum(data_test(:, 3) == data_test(:, 4))/n_test;
+           fprintf('%d, %d\n', dataset_num, Ts(j));
            dense_grids{dataset_num}(:, 3) = predict(ens,dense_grids{dataset_num}(:, 1:2));
+       end
 %    end
 end
 
@@ -93,15 +94,15 @@ end
 
 for i = 1:3
     figure(i)
-    gscatter(dense_grids{i}(:, 1), dense_grids{i}(:, 2), dense_grids{i}(:, 3), 'rb')
-%     plot(1:10:200, 1-train_ccrs(i, :))
-%     hold on
-%     plot(1:10:200, 1-test_ccrs(i, :))
-%     title_str = 'Dataset ' + string(i) + ' Train/Test Error';
-%     title(title_str)
-%     xlabel('T')
-%     ylabel('Error')
-%     legend('Train', 'Test')
+%     gscatter(dense_grids{i}(:, 1), dense_grids{i}(:, 2), dense_grids{i}(:, 3), 'rb')
+    semilogx(Ts,train_ccrs(i, :),'*-')
+    hold on
+    semilogx(Ts,test_ccrs(i, :),'*-')
+    title_str = 'Dataset ' + string(i) + ' Train/Test Error';
+    title(title_str)
+    xlabel('T')
+    ylabel('Error')
+    legend('Train', 'Test')
 %     gscatter(
 end
 
