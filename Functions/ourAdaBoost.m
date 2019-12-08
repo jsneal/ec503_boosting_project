@@ -21,12 +21,6 @@ data_dir = strcat(main_dir,  '\Datasets\synthetic\linearly_separable_not_by_stum
 load(data_dir); data_tilted = data; clear data;
 figure(3); gscatter(data_tilted(:,1),data_tilted(:,2),data_tilted(:,3),'rb','+o');
 
-%% Triangles Dataset
-main_dir = dir('..');
-main_dir = main_dir.folder;
-data_dir = strcat(main_dir,  '\Datasets\synthetic\triangles.mat');
-load(data_dir); data_triangles = [x' y];
-% figure(4); gscatter(data_triangles(:,1),data_triangles(:,2),data_triangles(:,3),'rb','+o');
 
 %% AdaBoost on Circular Dataset
 n = size(data_circular,1);
