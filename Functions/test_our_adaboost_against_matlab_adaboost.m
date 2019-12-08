@@ -62,28 +62,30 @@ end
 %%
 
 for dataset_num = 1:3
-%    for T = 10:10:200
-       T = 200;
+%    
+       Ts = [1,3,5,7,10,20,50,100,200,500,1000];
+       n_Ts = numel(Ts);
+       for j = 1:n_Ts
 %        dense_grid{dataset_num}(:, 4) = zeros(size(dense_grid{dataset_num}(:, 1), 1));
-       data = datasets{dataset_num};
-       feature_col_num = size(data, 2) - 1;
+           data = datasets{dataset_num};
+           feature_col_num = size(data, 2) - 1;
 
-       n = size(data, 1);
-       randOrder = randperm(n);
-       train_end = round(.8*n);
-       data_train = datasets{dataset_num}(randOrder(1:train_end),:);
-       data_test = datasets{dataset_num}(randOrder(train_end+1:n),:);
-       n_train = size(data_train, 1);
-       t = templateTree('MaxNumSplits', 1);
-       ens = fitcensemble(data_train(:, 1:end-1), data_train(:, end), 'Method', 'AdaBoostM1', ...
-       'NumLearningCycles',T,'Learners',t);
-       data_test(:, 4) = predict(ens,data_test(:, 1:2));
-       data_train(:, 4) = predict(ens,data_train(:, 1:2));
-       n_test = size(data_test, 1);
-       train_ccrs(dataset_num, (T/10)) = sum(data_train(:, 3) == data_train(:, 4))/n_train;
-       test_ccrs(dataset_num, (T/10)) = sum(data_test(:, 3) == data_test(:, 4))/n_test;
-       fprintf('%d, %d\n', dataset_num, T);
-       dense_grids{dataset_num}(:, 3) = predict(ens,dense_grids{dataset_num}(:, 1:2));
+           n = size(data, 1);
+           randOrder = randperm(n);
+           train_end = round(.8*n);
+           data_train = datasets{dataset_num}(randOrder(1:train_end),:);
+           data_test = datasets{dataset_num}(randOrder(train_end+1:n),:);
+           n_train = size(data_train, 1);
+           t = templateTree('MaxNumSplits', 1);
+           ens = fitcensemble(data_train(:, 1:end-1), data_train(:, end), 'Method', 'AdaBoostM1', ...
+           'NumLearningCycles',T,'Learners',t);
+           data_test(:, 4) = predict(ens,data_test(:, 1:2));
+           data_train(:, 4) = predict(ens,data_train(:, 1:2));
+           n_test = size(data_test, 1);
+           train_ccrs(dataset_num, (T/10)) = sum(data_train(:, 3) == data_train(:, 4))/n_train;
+           test_ccrs(dataset_num, (T/10)) = sum(data_test(:, 3) == data_test(:, 4))/n_test;
+           fprintf('%d, %d\n', dataset_num, T);
+           dense_grids{dataset_num}(:, 3) = predict(ens,dense_grids{dataset_num}(:, 1:2));
 %    end
 end
 
