@@ -1,3 +1,7 @@
+% This script runs MATLAB's built in AdaBoost through fitcensemble() and
+% our AdaBoost function on three synthetic datasets and compares the
+% test/train error rates.
+Ts = [1,3,5,7,10,20,50,100,200];
 clear
 %% Decision Stump Separable Dataset
 main_dir = dir('..');

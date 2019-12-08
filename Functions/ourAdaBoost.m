@@ -21,6 +21,13 @@ data_dir = strcat(main_dir,  '\Datasets\synthetic\linearly_separable_not_by_stum
 load(data_dir); data_tilted = data; clear data;
 figure(3); gscatter(data_tilted(:,1),data_tilted(:,2),data_tilted(:,3),'rb','+o');
 
+%% Triangles Dataset
+main_dir = dir('..');
+main_dir = main_dir.folder;
+data_dir = strcat(main_dir,  '\Datasets\synthetic\triangles.mat');
+load(data_dir); data_triangles = [x' y];
+% figure(4); gscatter(data_triangles(:,1),data_triangles(:,2),data_triangles(:,3),'rb','+o');
+
 %% AdaBoost on Circular Dataset
 n = size(data_circular,1);
 Ts = [1,3,5,7,10,20,50,100,200];
@@ -67,3 +74,27 @@ semilogx(Ts,train_CCRs,'*-'); xlabel('T'); ylabel('CCR'); title('Train CCRs for 
 hold on;
 semilogx(Ts,test_CCRs,'*-');
 legend('Train CCRs', 'Test CCRs','Location','southeast');
+
+%% AdaBoost on Linear Dataset
+n = size(data_linear,1);
+Ts = [1,3,5,7,10,20,50,100,200,500,1000];
+test_CCRs = zeros(numel(Ts),1);
+train_CCRs = zeros(numel(Ts),1);
+
+randOrder = randperm(n);
+data_linear_train = data_linear(randOrder(1:160),:);
+data_linear_test = data_linear(randOrder(161:200),:);
+all_gs = calculate_gs(data_linear);
+
+for i=1:numel(Ts)
+    [alphas,classifiers] = AdaBoost(data_linear_train, Ts(i), all_gs);
+    test_CCRs(i,1) = test_our_boosted_classifier(data_linear_test,alphas,classifiers);
+    train_CCRs(i,1) = test_our_boosted_classifier(data_linear_train,alphas,classifiers);
+end
+%% CCR
+figure(6);
+semilogx(Ts,train_CCRs,'*-'); xlabel('T'); ylabel('CCR'); title('Train CCRs for Linear Dataset');
+hold on;
+semilogx(Ts,test_CCRs,'*-');
+legend('Train CCRs', 'Test CCRs','Location','southeast');
+
