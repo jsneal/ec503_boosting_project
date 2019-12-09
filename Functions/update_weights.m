@@ -18,8 +18,8 @@ z = 2*sqrt(error*(1-error));
 updated_weights = zeros(size(weights,1),1);
 
 for i=1:size(X,1)
-    pred = decision_stump(X(i,1:2), best_feature, best_treshold, best_smaller_is);
-    if (pred ~= X(i,3))
+    pred = decision_stump(X(i,1:end-1), best_feature, best_treshold, best_smaller_is);
+    if (pred ~= X(i,end))
         updated_weights(i,1) = weights(i,1)*exp(alpha)/z;
     else
         updated_weights(i,1) = weights(i,1)*exp(-alpha)/z;
