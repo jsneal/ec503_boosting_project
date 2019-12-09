@@ -1,5 +1,6 @@
 %% AdaBoost John, Nadim, Karim
 clear; clc;
+
 %% Linear dataset
 main_dir = dir('..');
 main_dir = main_dir.folder;
@@ -21,6 +22,29 @@ data_dir = strcat(main_dir,  '\Datasets\synthetic\linearly_separable_not_by_stum
 load(data_dir); data_tilted = data; clear data;
 figure(3); gscatter(data_tilted(:,1),data_tilted(:,2),data_tilted(:,3),'rb','+o');
 
+%% AdaBoost on Linear Dataset
+n = size(data_linear,1);
+Ts = [1,3,5,7,10,20,50,100,200];
+test_CCRs = zeros(numel(Ts),1);
+train_CCRs = zeros(numel(Ts),1);
+
+randOrder = randperm(n);
+data_linear_train = data_linear(randOrder(1:160),:);
+data_linear_test = data_linear(randOrder(161:200),:);
+all_gs = calculate_gs(data_linear);
+
+for i=1:numel(Ts)
+    [alphas,classifiers] = AdaBoost(data_linear_train, Ts(i), all_gs);
+    test_CCRs(i,1) = test_our_boosted_classifier(data_linear_test,alphas,classifiers);
+    train_CCRs(i,1) = test_our_boosted_classifier(data_linear_train,alphas,classifiers);
+end
+
+%% CCR
+figure(6);
+semilogx(Ts,train_CCRs,'*-'); xlabel('T'); ylabel('CCR'); title('CCRs for Linear Dataset');
+hold on;
+semilogx(Ts,test_CCRs,'*-');
+legend('Train CCRs', 'Test CCRs','Location','northeast');
 
 %% AdaBoost on Circular Dataset
 n = size(data_circular,1);
@@ -44,7 +68,10 @@ figure(4);
 semilogx(Ts,train_CCRs,'*-'); xlabel('T'); ylabel('CCR'); title('CCRs for Circular Dataset');
 hold on;
 semilogx(Ts,test_CCRs,'*-');
-legend('Train CCRs', 'Test CCRs','Location','southeast');
+legend('Train CCRs', 'Test CCRs','Location','east');
+%%
+figure;
+a = decision_boundary(data_circular,alphas,classifiers,0.01);
 
 %% AdaBoost on Tilted Dataset
 n = size(data_tilted,1);
@@ -64,31 +91,9 @@ for i=1:numel(Ts)
 end
 %% CCR
 figure(5);
-semilogx(Ts,train_CCRs,'*-'); xlabel('T'); ylabel('CCR'); title('Train CCRs for Tilted Dataset');
+semilogx(Ts,train_CCRs,'*-'); xlabel('T'); ylabel('CCR'); title('CCRs for Tilted Dataset');
 hold on;
 semilogx(Ts,test_CCRs,'*-');
-legend('Train CCRs', 'Test CCRs','Location','southeast');
-
-%% AdaBoost on Linear Dataset
-n = size(data_linear,1);
-Ts = [1,3,5,7,10,20,50,100,200,500,1000];
-test_CCRs = zeros(numel(Ts),1);
-train_CCRs = zeros(numel(Ts),1);
-
-randOrder = randperm(n);
-data_linear_train = data_linear(randOrder(1:160),:);
-data_linear_test = data_linear(randOrder(161:200),:);
-all_gs = calculate_gs(data_linear);
-
-for i=1:numel(Ts)
-    [alphas,classifiers] = AdaBoost(data_linear_train, Ts(i), all_gs);
-    test_CCRs(i,1) = test_our_boosted_classifier(data_linear_test,alphas,classifiers);
-    train_CCRs(i,1) = test_our_boosted_classifier(data_linear_train,alphas,classifiers);
-end
-%% CCR
-figure(6);
-semilogx(Ts,train_CCRs,'*-'); xlabel('T'); ylabel('CCR'); title('Train CCRs for Linear Dataset');
-hold on;
-semilogx(Ts,test_CCRs,'*-');
-legend('Train CCRs', 'Test CCRs','Location','southeast');
-
+legend('Train CCRs', 'Test CCRs','Location','east');
+%%
+a = decision_boundary(data_tilted,alphas,classifiers,1);
