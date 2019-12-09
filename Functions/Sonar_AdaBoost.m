@@ -17,12 +17,18 @@ randOrder = randperm(n);
 data_train = data(randOrder(1:143),:);
 data_test = data(randOrder(144:208),:);
 all_gs = calculate_gs(data);
-t= 100;
-i=2;
+for t = 1:numel(Ts)
+    [alphas,classifiers]= AdaBoost(data_train,Ts(t), all_gs);
+    test_CCRs(t,1) = test_our_boosted_classifier(data_test,alphas,classifiers);
+    train_CCRs(t,1) = test_our_boosted_classifier(data_train,alphas,classifiers);
+end
 
-[alphas,classifiers]= AdaBoost(data_train,t, all_gs);
-test_CCRs(i,1) = test_our_boosted_classifier(data_test,alphas,classifiers);
-train_CCRs(i,1) = test_our_boosted_classifier(data_train,alphas,classifiers);
+%%
+figure(1)
+semilogx(Ts,train_CCRs,'*-'); xlabel('T'); ylabel('CCR'); title('Train/Test CCR');
+hold on;
+semilogx(Ts,test_CCRs,'*-');
+legend('Train CCRs', 'Test CCRs','Location','east');
 
 % 
 % if (i==9)
