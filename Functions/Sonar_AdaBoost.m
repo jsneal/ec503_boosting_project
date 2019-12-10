@@ -25,12 +25,12 @@ end
 
 %%
 figure(1)
-semilogx(Ts,train_CCRs,'*-'); xlabel('T'); ylabel('CCR'); title('Train/Test CCR');
+semilogx(Ts,train_CCRs,'*-'); xlabel('T'); ylabel('CCR'); title('Train/Test CCR on Sonar (Our AdaBoost)');
 hold on;
 semilogx(Ts,test_CCRs,'*-');
 legend('Train CCRs', 'Test CCRs','Location','east');
 
-% 
-% if (i==9)
-%     create_confusion(data_tilted_test,alphas,classifiers);
-% end
+
+figure(2)
+create_confusion(data_test,alphas,classifiers);
+

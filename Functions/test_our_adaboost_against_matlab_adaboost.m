@@ -78,31 +78,40 @@ for dataset_num = 1:3
            n_train = size(data_train, 1);
            t = templateTree('MaxNumSplits', 1);
            ens = fitcensemble(data_train(:, 1:end-1), data_train(:, end), 'Method', 'AdaBoostM1', ...
-           'NumLearningCycles',T,'Learners',t);
+           'NumLearningCycles',Ts(j),'Learners',t);
            data_test(:, 4) = predict(ens,data_test(:, 1:2));
            data_train(:, 4) = predict(ens,data_train(:, 1:2));
            n_test = size(data_test, 1);
-           train_ccrs(dataset_num, (T/10)) = sum(data_train(:, 3) == data_train(:, 4))/n_train;
-           test_ccrs(dataset_num, (T/10)) = sum(data_test(:, 3) == data_test(:, 4))/n_test;
-           fprintf('%d, %d\n', dataset_num, T);
+           train_ccrs(dataset_num, j) = sum(data_train(:, 3) == data_train(:, 4))/n_train;
+           test_ccrs(dataset_num, j) = sum(data_test(:, 3) == data_test(:, 4))/n_test;
+           fprintf('%d, %d\n', dataset_num, Ts(j));
            dense_grids{dataset_num}(:, 3) = predict(ens,dense_grids{dataset_num}(:, 1:2));
+       end
 %    end
 end
 
 %%
-
+names = {"Stump Separable", "Circular", "Tilted"};
 for i = 1:3
     figure(i)
     gscatter(dense_grids{i}(:, 1), dense_grids{i}(:, 2), dense_grids{i}(:, 3), 'rb')
-%     plot(1:10:200, 1-train_ccrs(i, :))
-%     hold on
-%     plot(1:10:200, 1-test_ccrs(i, :))
-%     title_str = 'Dataset ' + string(i) + ' Train/Test Error';
-%     title(title_str)
-%     xlabel('T')
-%     ylabel('Error')
-%     legend('Train', 'Test')
-%     gscatter(
+    hold on
+    gscatter(datasets{i}(:, 1), datasets{i}(:, 2), datasets{i}(:, 3), 'rb')
+    title_str = "Decision Boundary of MATLAB''s Built-in AdaBoost " + "(" + names{i} + ")";
+    title(title_str)
+    xlabel('X1')
+    ylabel('X2')
+    legend('1', '-1')
+    figure(i+3)
+    semilogx(Ts,train_ccrs(i,:),'*-'); xlabel('T'); ylabel('CCR');
+    hold on;
+    semilogx(Ts,test_ccrs(i, :),'*-');
+    legend('Train CCRs', 'Test CCRs','Location','east');
+    title_str = "Dataset " + names{i} + " Train/Test Error (MATLAB AdaBoost)";
+    title(title_str)
+    xlabel('T')
+    ylabel('Error')
+    legend('Train', 'Test')
 end
 
 

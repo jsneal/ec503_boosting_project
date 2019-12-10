@@ -61,14 +61,15 @@ for i = 1:3
     zero_vec = zeros(100, 1);
     if best_feature == 1
         boundary = linspace(min(data_train(:,2)), max(data_train(:,2)), 100)';
-        gscatter(tresh_vec, boundary, zero_vec, 'k');
+        gscatter(tresh_vec, boundary, zero_vec, 'k', '.');
     else
         boundary = linspace(min(data_train(:,1)), max(data_train(:,1)), 100)';
-        gscatter(boundary, tresh_vec, zero_vec, 'k');
+        gscatter(boundary, tresh_vec, zero_vec, 'k', '.');
     end
+    title('Decision Boundary')
     xlabel('x1')
     ylabel('x2')
-    
+    legend('off')
     % Train CCR
     for j = 1:n_train
         predicted_labels_train{i}(j, 1) = decision_stump(data_train(j, :), best_feature, best_treshold, best_smaller_is);
@@ -93,5 +94,6 @@ xticklabels({'Separable By Stump', 'Circular Dataset', 'Separable (Not By Stump)
 title('Train/Test CCR For Different Synthetic Datasets')
 xlabel('Datasets (Train/Test)')
 ylabel('CCR')
+legend('Train', 'Test')
 
 
