@@ -1,4 +1,4 @@
-%% AdaBoost John, Nadim, Karim
+%% AdaBoost (heatmap) John, Nadim, Karim
 clear; clc;
 
 %% Linear dataset
