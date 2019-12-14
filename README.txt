@@ -1,3 +1,7 @@
+This repository's main focus is an implementation of AdaBoost on synthetic and non-synthetic datasets for a class project at Boston University (EC503 with Professor Ishwar).
+
+Authors: Nadim El Helou, Karim Khalil, John Neal
+
 GitHub Repository: https://github.com/jsneal/ec503_boosting_project
 
 Functions:
